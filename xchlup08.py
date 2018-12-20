@@ -31,8 +31,8 @@ def task2(FS, DATA):
     for i in range(0, 320):
         time.append(i / FS)
     plt.plot(time, shorter_data/DATA.size, time_for_points, points,'.')
-    plt.xlabel('t [ms]')
-    plt.ylabel('s [n]')
+    #plt.xlabel('t [ms]')
+    #plt.ylabel('s [n]')
     #plt.savefig('1.png')
 
     with open("xchlup08.txt") as f:
@@ -52,13 +52,13 @@ def task3(FS, DATA):
     A = [1.0000, -2.8870, 2.7997, -0.9113]
 
     z, p, k = tf2zpk(B, A)
-    plt.figure(figsize=(5,5))
-    plt.gca().add_patch(plt.Circle((0,0), radius=1., color='grey', fc='none'))
-    plt.scatter(np.real(z), np.imag(z), marker='o', facecolors='none', edgecolors='r', label='nuly')
-    plt.scatter(np.real(p), np.imag(p), marker='x', color='g', label='póly')
-    plt.xlabel('Realná složka $\mathbb{R}\{$z$\}$')
-    plt.xlabel('Imaginarní složka $\mathbb{I}\{$z$\}$')
-    plt.legend(loc='upper right')
+    #plt.figure(figsize=(5,5))
+    #plt.gca().add_patch(plt.Circle((0,0), radius=1., color='grey', fc='none'))
+    #plt.scatter(np.real(z), np.imag(z), marker='o', facecolors='none', edgecolors='r', label='nuly')
+    #plt.scatter(np.real(p), np.imag(p), marker='x', color='g', label='póly')
+    #plt.xlabel('Realná složka $\mathbb{R}\{$z$\}$')
+    #plt.xlabel('Imaginarní složka $\mathbb{I}\{$z$\}$')
+    #plt.legend(loc='upper right')
     #plt.savefig('2.png', dpi=125)
 #---------------------------------------------------------------------------------------------------#
 def task4(FS,DATA):
@@ -71,7 +71,7 @@ def task4(FS,DATA):
         time.append(i / FS)
     shorter_data = DATA[:320]
     filtered_signal = signal.lfilter(B, A, DATA)
-    plt.plot(time, shorter_data/DATA.size, time, filtered_signal[:320]/DATA.size)
+    #plt.plot(time, shorter_data/DATA.size, time, filtered_signal[:320]/DATA.size)
     return filtered_signal
     #plt.savefig('4.png', dpi=125)
 #---------------------------------------------------------------------------------------------------#
@@ -98,13 +98,13 @@ def task56(FS,DATA):
         time.append(i / FS)
     shorter_data = DATA[:320]
 
-    plt.plot(time, filtered_signal[:320]/DATA.size, label='ss[n]')
-    plt.plot(time, shorter_data/DATA.size, color='dimgrey', label='s[n]')
-    plt.plot(time_for_shifted, filtered_signal[:320]/DATA.size, label='ss$_{shifted}$[n]')
-    plt.plot(time_for_points, points,'.', color='tan', label='decoded symbols')
-    plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1),  shadow=True, ncol=4)
-    plt.xlabel('t')
-    plt.ylabel('s[n], ss[n], ss$_{shifted}$[n], decoded symbols')
+    #plt.plot(time, filtered_signal[:320]/DATA.size, label='ss[n]')
+    #plt.plot(time, shorter_data/DATA.size, color='dimgrey', label='s[n]')
+    #plt.plot(time_for_shifted, filtered_signal[:320]/DATA.size, label='ss$_{shifted}$[n]')
+    #plt.plot(time_for_points, points,'.', color='tan', label='decoded symbols')
+    #plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1),  shadow=True, ncol=4)
+    #plt.xlabel('t')
+    #plt.ylabel('s[n], ss[n], ss$_{shifted}$[n], decoded symbols')
     #plt.savefig('5.png', dpi=125)
 #---------------------------------------------------------------------------------------------------#
 def task7(FS, DATA):
@@ -144,63 +144,46 @@ def task8(FS,DATA):
     filtered_signal = task4(FS, DATA)
     dft = fft(DATA)
     moduls = np.absolute(dft)
-    plt.plot(moduls[:(FS//2)], color='dimgrey')
-    plt.xlabel('f [Hz]')
-    plt.ylabel(' ')
-    plt.savefig('6.png', dpi=125)
+    #plt.plot(moduls[:(FS//2)], color='dimgrey')
+    #plt.xlabel('f [Hz]')
+    #plt.ylabel(' ')
+    #plt.savefig('6.png', dpi=125)
 
     dft = fft(filtered_signal)
     moduls = np.absolute(dft)
-    plt.plot(moduls[:(FS//2)], color='dimgrey')
-    plt.xlabel('f [Hz]')
-    plt.ylabel(' ')
+    #plt.plot(moduls[:(FS//2)], color='dimgrey')
+    #plt.xlabel('f [Hz]')
+    #plt.ylabel(' ')
     #plt.savefig('7.png', dpi=125)
 #---------------------------------------------------------------------------------------------------#
 def task9(FS, DATA):
     print("Ukol 9")
-    B = [0.0192, -0.0185, -0.0185, 0.0192]
-    A = [1.0000, -2.8870, 2.7997, -0.9113]
-
-    mean=np.mean(DATA)
-    stdn=np.std(DATA)
-    Om = 10000
-    N = 200
-    ksi_stack = []
-    for _ in range(Om):
-        x = np.random.normal(mean, stdn, N)
-        y = lfilter(B, A, x)
-        ksi_stack.append(y)
-
-    ksi = np.array(ksi_stack)
-    xmin = np.min(ksi)
-    xmax = np.max(ksi)
-    n_aprx = 50 # pocet hodnot, kterymi aproximujeme dist fci
+    N = 1
+    xmin = np.min(DATA)
+    xmax = np.max(DATA)
+    n_aprx = 50
     x = np.linspace(xmin, xmax, n_aprx)
-    n = 50 # cas, pro ktery pocitame dist fci
     binsize = np.abs(x[1] - x[0])
-    hist, _ = np.histogram(ksi[:,n], n_aprx)
-    px = hist / Om / binsize
-    plt.plot(x, px)
-    plt.gca().set_xlabel('$x$')
-    plt.gca().grid(alpha=0.5, linestyle='--')
-    plt.tight_layout()
+    hist, _ = np.histogram(DATA, x)
+    px = hist / N / binsize
+    #plt.plot(x[:49]/DATA.size, px)
+    #plt.gca().set_xlabel('$x$')
+    #plt.gca().grid(alpha=0.5, linestyle='--')
+    #plt.tight_layout()
+    #plt.show()
     #plt.savefig('8.png', dpi=125)
+    print(np.trapz(x=x[:49]/DATA.size,y=px))
 #---------------------------------------------------------------------------------------------------#
 def task10(FS, DATA):
     print("Ukol 10")
-    filtered_signal = task4(FS, DATA)
     r = np.array([])
-    for k in range(-50, 51):
-        r = np.append(r, np.sum(DATA/DATA.size*shift(DATA, k, cval = 0)))
-    N = 50
-    k = np.arange(-N+1, N)
-    Rv = np.correlate(filtered_signal[:50], filtered_signal[:50], 'full') / N
-
-    plt.plot(k, Rv)
-    plt.tight_layout()
-    plt.plot(r)
-    #plt.savefig('9.png', dpi=125)
-    return Rv
+    for i in range(-50,51):
+        r = np.append(r, np.sum((DATA/DATA.size)*shift(DATA, i, cval=0)))
+    #plt.plot(r)
+    #plt.ylabel('R[k]')
+    #plt.xlabel('k')
+    # plt.savefig('9.png', dpi=125)
+    return r
 #---------------------------------------------------------------------------------------------------#
 def task11(FS, DATA):
     print("Ukol 11")
@@ -212,8 +195,8 @@ def task11(FS, DATA):
 def task12(FS, DATA):
     print("Ukol 12")
     hist, xedges, yedges = np.histogram2d(DATA, shift(DATA, 1, cval=0), 32, normed=True, range=[[-FS, FS], [-FS, FS]])
-    plt.imshow(hist, interpolation='nearest', origin='low',extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]])
-    plt.colorbar()
+    #plt.imshow(hist, interpolation='nearest', origin='low',extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]])
+    #plt.colorbar()
     #plt.savefig('10.png', dpi=125)
 #---------------------------------------------------------------------------------------------------#
 def task13(FS, DATA):
