@@ -1,0 +1,203 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[pdftex]{graphics}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{appendix}
+
+
+
+% Kodovani (cestiny) v dokumentu: (doporucujeme UTF-8).
+\usepackage[utf8]{inputenc}	% Doporucujeme pouzivat UTF-8 (unicode).
+%\usepackage[cp1250]{inputenc}	% Omezena stredoevropska kodova stranka, pouze MSW.
+
+%%% Nemente:
+\usepackage[margin=2cm]{geometry}
+\newtoks\jmenopraktika \newtoks\jmeno \newtoks\datum
+\newtoks\obor \newtoks\rocnik \newtoks\semestr
+\newtoks\cisloulohy \newtoks\jmenoulohy
+
+
+%%%%%%%%%%% Doplnte pozadovane polozky:
+
+\jmenopraktika={FIT VUT}  % nahradte jmenem vaseho predmetu
+\jmeno={Silvie Chlupová}            % nahradte jmenem mericiho
+\datum={11.12.2018}        % nahradte datem mereni ulohy
+\obor={Informační technologie}                     % nahradte zkratkou vami studovaneho oboru
+\rocnik={II}                  % nahradte rocnikem, ve kterem studujete
+\semestr={III}                 % nahradte semestrem, ve kterem studujete
+
+
+%%%%%%%%%%% Konec pozadovanych polozek.
+
+
+%%%%%%%%%%% Uzitecne balicky:
+\usepackage[czech]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{indentfirst}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Zacatek dokumentu
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Nemente:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\thispagestyle{empty}
+
+{
+\begin{center}
+\sf 
+\bigskip
+{\huge \bfseries ISS Projekt 2018} \\
+\bigskip
+{\Large \the\jmenopraktika}
+\end{center}
+
+\bigskip
+
+\sf
+\noindent
+\setlength{\arrayrulewidth}{1pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l l}
+\large {\bfseries Zpracovala:}  \the\jmeno & \large  {\bfseries Vypracováno:} \the\datum\\[2mm]
+\large  {\bfseries Obor:} \the\obor  \hspace{5mm}  {\bfseries Ročník:} \the\rocnik 
+\hspace{5mm} {\bfseries Semestr:} \the\semestr
+\\
+\hline
+\end{tabular*}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% konec Nemente.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Zacatek textu vlastniho protokolu
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{multicols}{2}
+	
+\subsubsection*{Čtení signálu z wav}
+
+Nejdříve se načte signál ze souboru xchlup08.wav a pomocí nástroje scipy se signál analyzuje.
+Vzorkovací frekvence vyšla 16000 Hz, délka je 32000 vzorků, délka v sekundách 2 s. Počet binárních symbolů je 2000.
+
+\subsubsection*{Dekódování do binárních symbolů}
+
+V tomto úkolu bylo provedeno dekódování do binárních symbolů. Vzal se každý 8. vzorek ze segmentu 16 vzorků a pokud byl větší než 0, tak výstupem je 1, pokud byl menší, výstupem je 0. Kromě vizuálního posouzení správnosti dekódování symbolů byla také provedena zkouška použitím funkce XOR při porovnávání se souborem xchlup08.txt.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\linewidth]{1.png}
+	\caption{Dekódování do binárních symbolů }
+	\label{fig:obr1}
+\end{figure}
+
+
+\subsubsection*{Nulové body a póly }
+
+Byl zadán filtr s přenosovou funkcí H(z)
+
+B = [0.0192, -0.0185, -0.0185, 0.0192] 
+
+A = [1.0000, -2.8870, 2.7997, -0.9113]
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{2.png}
+	\caption{Nulové body a póly přenosová funkce }
+	\label{fig:obr2}
+\end{figure}
+
+Filtr je stabilní, póly jsou uvnitř jednotkové kružnice.
+
+\subsubsection*{Modul kmitočtové charakteristiky}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\linewidth]{3.png}
+	\caption{Modul kmitočtové charakteristiky }
+	\label{fig:obr3}
+\end{figure}
+
+Jedná se o dolní propust.
+
+\subsubsection*{Filtrace signálu}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\linewidth]{4.png}
+	\caption{Vyfiltrovaný signál }
+	\label{fig:obr4}
+\end{figure}
+
+Signál bude posunut o 7 vzorků.
+
+\subsubsection*{Posun filtrovaného signálu}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\linewidth]{5.png}
+	\caption{Posunutí filtrovaného signál }
+	\label{fig:obr5}
+\end{figure}
+
+\subsubsection*{Chybovost}
+
+Dékodované symboly z posunutého signálu mají chybovost 45\%. Počet chyb je 9.
+
+\subsubsection*{Diskrétní Fourierova transformace}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\linewidth]{6.png}
+	\caption{Diskrétní Fourierova transformace}
+	\label{fig:obr6}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\linewidth]{7.png}
+	\caption{Diskrétní Fourierova transformace}
+	\label{fig:obr7}
+\end{figure}
+
+\subsubsection*{Odhad funkce hustoty rozdělení pravděpodobnosti}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{8.png}
+	\caption{Odhad funkce hustoty rozdělení pravděpodobnosti}
+	\label{fig:obr8}
+\end{figure}
+
+\subsubsection*{Korelační koeficienty}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{9_1.png}
+	\caption{Korelační koeficienty R[k]}
+	\label{fig:obr9}
+\end{figure}
+
+\subsubsection*{Časový odhad sdružené funkce hustoty rozdělení pravděpodobnosti}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{10.png}
+	\caption{Časový odhad sdružené funkce hustoty rozdělení pravděpodobnosti}
+	\label{fig:obr10}
+\end{figure}
+
+\end{multicols}
+
+\end{document}
