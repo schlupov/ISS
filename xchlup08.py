@@ -6,6 +6,7 @@ import numpy as np
 from scipy.ndimage.interpolation import shift
 from scipy.signal import lfilter
 from scipy.signal import tf2zpk
+from scipy.stats import norm
 #---------------------------------------------------------------------------------------------------#
 FS, DATA = wavfile.read('./xchlup08.wav')
 
@@ -30,7 +31,7 @@ def task2(FS, DATA):
 
     for i in range(0, 320):
         time.append(i / FS)
-    plt.plot(time, shorter_data/DATA.size, time_for_points, points,'.')
+    #plt.plot(time, shorter_data/DATA.size, time_for_points, points,'.')
     #plt.xlabel('t [ms]')
     #plt.ylabel('s [n]')
     #plt.savefig('1.png')
@@ -52,16 +53,30 @@ def task3(FS, DATA):
     A = [1.0000, -2.8870, 2.7997, -0.9113]
 
     z, p, k = tf2zpk(B, A)
-    #plt.figure(figsize=(5,5))
+    #plt.figure(figsize=(7,7))
     #plt.gca().add_patch(plt.Circle((0,0), radius=1., color='grey', fc='none'))
     #plt.scatter(np.real(z), np.imag(z), marker='o', facecolors='none', edgecolors='r', label='nuly')
     #plt.scatter(np.real(p), np.imag(p), marker='x', color='g', label='póly')
     #plt.xlabel('Realná složka $\mathbb{R}\{$z$\}$')
-    #plt.xlabel('Imaginarní složka $\mathbb{I}\{$z$\}$')
+    #plt.ylabel('Imaginarní složka $\mathbb{I}\{$z$\}$')
     #plt.legend(loc='upper right')
     #plt.savefig('2.png', dpi=125)
+    #plt.show()
 #---------------------------------------------------------------------------------------------------#
 def task4(FS,DATA):
+    print("Ukol 4")
+    B = [0.0192, -0.0185, -0.0185, 0.0192]
+    A = [1.0000, -2.8870, 2.7997, -0.9113]
+
+    normf, freqresponse = signal.freqz(B, A)
+
+    f = FS * normf / (2*np.pi)
+    #plt.plot(f, np.abs(freqresponse))
+    #plt.xlabel("f [Hz]")
+    #plt.ylabel("|H(f)|")
+    #plt.savefig('3.png', dpi=125)
+#---------------------------------------------------------------------------------------------------#
+def task5(FS,DATA):
     print("Ukol 4")
     B = [0.0192, -0.0185, -0.0185, 0.0192]
     A = [1.0000, -2.8870, 2.7997, -0.9113]
@@ -75,9 +90,9 @@ def task4(FS,DATA):
     return filtered_signal
     #plt.savefig('4.png', dpi=125)
 #---------------------------------------------------------------------------------------------------#
-def task56(FS,DATA):
+def task6(FS,DATA):
     print("Ukol 5 a 6")
-    filtered_signal = task4(FS,DATA)
+    filtered_signal = task5(FS,DATA)
     time_for_shifted = []
     for i in range(0, 320):
         time_for_shifted.append(i / FS - 0.0007)
@@ -114,7 +129,7 @@ def task7(FS, DATA):
 
     points = []
     time_for_points = []
-    filtered_signal = task4(FS, DATA)
+    filtered_signal = task5(FS, DATA)
     signal_for_points = filtered_signal[:320] / DATA.size
     for i in range(8, 320, 16):
         time_for_points.append(i / FS - 0.0007)
@@ -141,7 +156,7 @@ def task7(FS, DATA):
 #---------------------------------------------------------------------------------------------------#
 def task8(FS,DATA):
     print("Ukol 8")
-    filtered_signal = task4(FS, DATA)
+    filtered_signal = task5(FS, DATA)
     dft = fft(DATA)
     moduls = np.absolute(dft)
     #plt.plot(moduls[:(FS//2)], color='dimgrey')
@@ -177,20 +192,23 @@ def task9(FS, DATA):
 def task10(FS, DATA):
     print("Ukol 10")
     r = np.array([])
+    result = []
     for i in range(-50,51):
         r = np.append(r, np.sum((DATA/DATA.size)*shift(DATA, i, cval=0)))
-    #plt.plot(r)
+        result.append(i)
+    #plt.plot(result, r/10e8)
     #plt.ylabel('R[k]')
     #plt.xlabel('k')
+    #plt.show()
     # plt.savefig('9.png', dpi=125)
-    return r
+    return r/10e8
 #---------------------------------------------------------------------------------------------------#
 def task11(FS, DATA):
     print("Ukol 11")
     Rv = task10(FS, DATA)
-    print('Value of coefficient R[0] = %.2f' %Rv[50])
-    print('Value of coefficient R[10] = %.2f' %Rv[60])
-    print('Value of coefficient R[16] = %.2f' %Rv[66])
+    print('Value of coefficient R[0] = {}'.format(Rv[50]))
+    print('Value of coefficient R[1] = {}'.format(Rv[51]))
+    print('Value of coefficient R[16] = {}'.format(Rv[66]))
 #---------------------------------------------------------------------------------------------------#
 def task12(FS, DATA):
     print("Ukol 12")
@@ -213,10 +231,10 @@ def task14(FS, DATA):
     x = np.linspace(-16000, 16000, num=32)
     x = np.tile(x, (32, 1))
     r = np.sum(x * x.transpose() * hist) * squareSize
-    print(f"Histogram calculated R[10] = {r}")
+    print(f"Histogram calculated R[1] = {r/10e8}")
 
 
 if __name__== "__main__":
-  functions = [task2,task3,task4,task56,task7,task8,task9,task10,task11,task12,task13,task14]
-  for i in range(12):
+  functions = [task2,task3,task4,task5,task6,task7,task8,task9,task10,task11,task12,task13,task14]
+  for i in range(13):
       functions[i](FS,DATA)
