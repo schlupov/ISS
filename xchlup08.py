@@ -61,7 +61,6 @@ def task3(FS, DATA):
     #plt.ylabel('Imaginarní složka $\mathbb{I}\{$z$\}$')
     #plt.legend(loc='upper right')
     #plt.savefig('2.png', dpi=125)
-    #plt.show()
 #---------------------------------------------------------------------------------------------------#
 def task4(FS,DATA):
     print("Ukol 4")
@@ -185,7 +184,6 @@ def task9(FS, DATA):
     #plt.gca().set_xlabel('$x$')
     #plt.gca().grid(alpha=0.5, linestyle='--')
     #plt.tight_layout()
-    #plt.show()
     #plt.savefig('8.png', dpi=125)
     print(np.trapz(x=x[:49]/DATA.size,y=px))
 #---------------------------------------------------------------------------------------------------#
@@ -225,13 +223,21 @@ def task13(FS, DATA):
     print(f"Total volume of 2D histogram: {integral}")
 #---------------------------------------------------------------------------------------------------#
 def task14(FS, DATA):
-    print("Ukol 14")
-    hist, xedges, yedges = np.histogram2d(DATA, shift(DATA, 1, cval=0), 32, normed=True, range=[[-FS, FS], [-FS, FS]])
-    squareSize = (xedges[1] - xedges[0]) * (yedges[1] - yedges[0])
-    x = np.linspace(-16000, 16000, num=32)
-    x = np.tile(x, (32, 1))
-    r = np.sum(x * x.transpose() * hist) * squareSize
-    print(f"Histogram calculated R[1] = {r/10e8}")
+    n1 = -50
+    n_aprx = 50
+    R_all = []
+
+    for n2 in range(n1, n1 + 102):
+        px1x2, x1_edges, x2_edges = np.histogram2d(DATA, shift(DATA, n2, cval=0), n_aprx, normed=True)
+        binsize = np.abs(x1_edges[1] - x1_edges[0]) * (x2_edges[1] - x2_edges[0])
+
+        bin_centers_x1 = x1_edges[:-1] + (x1_edges[1:] - x1_edges[:-1]) / 2
+        bin_centers_x2 = x2_edges[:-1] + (x2_edges[1:] - x2_edges[:-1]) / 2
+        x1x2 = np.outer(bin_centers_x1, bin_centers_x2)
+        R = np.sum(x1x2 * px1x2 * binsize)
+        R_all.append(R/10e8)
+
+    print('Value of coefficient R[1] = {}'.format(R_all[51]))
 
 
 if __name__== "__main__":
